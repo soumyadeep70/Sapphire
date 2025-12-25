@@ -1,0 +1,15 @@
+build/
+out/
+result
+result-*
+
+Session.vim
+Sessionx.vim
+.vscode/
+.history/
+.idea/
+.idea_modules/
+.zed/
+
+.pre-commit-config.yaml
+.env

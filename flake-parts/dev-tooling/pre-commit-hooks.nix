@@ -1,4 +1,4 @@
-# --- flake-parts/pre-commit-hooks.nix
+# --- flake-parts/dev-tooling/pre-commit-hooks.nix
 { inputs, lib, ... }:
 {
   imports = with inputs; [ pre-commit-hooks.flakeModule ];

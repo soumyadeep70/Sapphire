@@ -41,7 +41,7 @@
           ]
           ++ (lib.optional (treefmt-wrapper != null) (
             pkgs.writeShellScriptBin "fmt" ''
-              set -e
+              set -eu
               exec ${treefmt-wrapper}/bin/treefmt "$@"
             ''
           ));
@@ -51,8 +51,7 @@
             scripts
             ++ (with pkgs; [
               git
-              cz-cli
-              vim
+              commitizen
               openssh
               nixd
               nix-output-monitor
@@ -65,15 +64,12 @@
             RT=$'\033[0m'
 
             run_command() {
-              local rc
               if [ "''${DEBUG:-0}" = "1" ]; then
                 "$@" > >(sed "s/^/$Y→$RT /" >&2) 2>&1
-                rc=''${PIPESTATUS[0]}
               else
                 "$@" >/dev/null 2>&1
-                rc=$?
               fi
-              return $rc
+              return $?
             }
 
             eval "$(${pkgs.starship}/bin/starship init bash)"
@@ -95,12 +91,12 @@
               setup_pre_commit
             ''}
 
-            setup_github_ssh_auth() {
+            setup_git_and_ssh_auth() {
               success() {
-                echo "$G✓$RT SSH setup completed successfully." >&2
+                echo "$G✓$RT Git and SSH setup completed successfully." >&2
               }
               failure() {
-                echo "$R✗$RT SSH setup failed: $1" >&2
+                echo "$R✗$RT Git and SSH setup failed: $1" >&2
               }
               run_command mkdir -p "$HOME/.ssh" || { failure "failed to create .ssh directory"; return 1; }
               run_command touch "$HOME/.ssh/known_hosts" || { failure "failed to create known_hosts file"; return 1; }
@@ -108,19 +104,21 @@
                 || { failure "failed to fetch and write github.com host key"; return 1; }
               run_command eval "$(ssh-agent -s)" || { failure "error starting ssh-agent"; return 1; }
               run_command ${pkgs.dotenv-cli}/bin/dotenv -f .env -- sh -c '
+                set -euo pipefail
                 git config --global user.name "$GITHUB_USERNAME"
                 git config --global user.email "$GITHUB_USEREMAIL"
               ' || { failure "failed to set git username and email"; return 1; }
               run_command ${pkgs.dotenv-cli}/bin/dotenv -f .env -- sh -c '
+                set -euo pipefail
                 printf "%s\n" "$GITHUB_AUTH_PRIVATE_KEY" | ssh-add -
               ' || { failure "failed to add private key to ssh-agent"; return 1; }
               success
             }
-            setup_github_ssh_auth
+            setup_git_and_ssh_auth
 
             cleanup() {
-              eval "$(ssh-agent -k)" 2>&1 || true
-              rm -rf "$HOME"
+              run_command eval "$(ssh-agent -k)" 2>&1
+              run_command rm -rf "$HOME"
             }
             trap cleanup EXIT
           '';

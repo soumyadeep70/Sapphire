@@ -1,4 +1,4 @@
-# --- flake-parts/treefmt.nix
+# --- flake-parts/dev-tooling/treefmt.nix
 { inputs, ... }:
 {
   imports = with inputs; [ inputs.treefmt-nix.flakeModule ];

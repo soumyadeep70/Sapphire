@@ -18,7 +18,6 @@
     };
     nix-topology.url = "github:oddlama/nix-topology";
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
-    process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
     systems.url = "github:nix-systems/default";
     treefmt-nix.url = "github:numtide/treefmt-nix";
   };

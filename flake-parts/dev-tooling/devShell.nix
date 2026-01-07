@@ -7,118 +7,115 @@
       devShells.default =
         let
           treefmt-wrapper = if (lib.hasAttr "treefmt" config) then config.treefmt.build.wrapper else null;
-          pre-commit = if (lib.hasAttr "pre-commit" config) then config.pre-commit else null;
-
-          env = {
-            HOME = "$(mktemp -d)";
-            XDG_CONFIG_HOME = "$HOME/.config";
-            XDG_CACHE_HOME = "$HOME/.cache";
-            XDG_DATA_HOME = "$HOME/.local/share";
-            XDG_STATE_HOME = "$HOME/.local/state";
-          };
-
-          scripts = [
-            (pkgs.writeShellScriptBin "rename-project" ''
-              set -euo pipefail
-              find $1 \( -type d -name .git -prune \) -o -type f -print0 | xargs -0 sed -i "s/Sapphire/$2/g"
-            '')
-            (pkgs.writeShellScriptBin "show-help" ''
-              Y=$'\033[93m'
-              W=$'\033[97m'
-              C=$'\033[96m'
-              RT=$'\033[0m'
-
-              echo "$C╔══════════════════════════════════════════════════════════╗$RT"
-              echo "$C║                      📋 Quick Commands                   ║$RT"
-              echo "$C╠══════════════════════════════════════════════════════════╣$RT"
-              echo "$C║ $Y ● rename-project     $W Rename the whole project          $C║$RT"
-              ${lib.optionalString (treefmt-wrapper != null) ''
-                echo "$C║ $Y ● fmt                $W Format all files                  $C║$RT"
-              ''}
-              echo "$C║ $Y ● show-help          $W Display this help message         $C║$RT"
-              echo "$C╚══════════════════════════════════════════════════════════╝$RT"
-            '')
-          ]
-          ++ (lib.optional (treefmt-wrapper != null) (
-            pkgs.writeShellScriptBin "fmt" ''
-              set -eu
-              exec ${treefmt-wrapper}/bin/treefmt "$@"
-            ''
-          ));
+          pre-commit-script =
+            if (lib.hasAttr "pre-commit" config) then config.pre-commit.installationScript else null;
+          scripts = import ./scripts { inherit lib pkgs; };
         in
         pkgs.mkShell {
           packages =
-            scripts
-            ++ (with pkgs; [
-              git
-              commitizen
-              openssh
-              nixd
-              nix-output-monitor
-            ]);
+            builtins.attrValues scripts
+            ++ [
+              pkgs.pre-commit
+              pkgs.openssh
+              pkgs.nixd
+              pkgs.nix-output-monitor
+            ]
+            ++ lib.optional (treefmt-wrapper != null) treefmt-wrapper;
 
           shellHook = ''
-            R=$'\033[91m'
-            G=$'\033[92m'
-            Y=$'\033[93m'
-            RT=$'\033[0m'
-
-            run_command() {
-              if [ "''${DEBUG:-0}" = "1" ]; then
-                "$@" > >(sed "s/^/$Y→$RT /" >&2) 2>&1
-              else
-                "$@" >/dev/null 2>&1
-              fi
-              return $?
+            help() {
+              ${scripts.help}/bin/help
             }
 
-            eval "$(${pkgs.starship}/bin/starship init bash)"
-            ${lib.concatLines (lib.mapAttrsToList (name: value: "export ${name}=${value}") env)}
-            mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME"
+            report_status() {
+              local level="$1"; shift
+              case "$level" in
+                success)
+                  printf '{{ Foreground "#00FF00" "✓ %s" }}' "$*" ;;
+                failure)
+                  printf '{{ Foreground "#FF0000" "✗ %s" }}' "$*" ;;
+                *)
+                  printf '%s' "$*" ;;
+              esac | ${pkgs.gum}/bin/gum format -t template
+              printf '\n'
+            }
 
-            ${lib.optionalString (pre-commit != null) ''
-              setup_pre_commit() {
-                success() {
-                  echo "$G✓$RT Pre-commit installed successfully." >&2
-                }
-                failure() {
-                  echo "$R✗$RT Pre commit installation failed." >&2
-                }
-                run_command ${pkgs.writeShellScript "pre-commit-script" pre-commit.installationScript} \
-                  || { failure; return 1; }
-                success
+            start_spinner() {
+              ${pkgs.gum}/bin/gum spin --spinner points --title "$1" -- sleep infinity &
+              spinner_pid=$!
+            }
+
+            stop_spinner() {
+              kill "$1" 2>/dev/null || true
+              wait "$1" 2>/dev/null || true
+            }
+
+            PROJECT_ROOT="$(git rev-parse --show-toplevel)"
+            export HOME="$PROJECT_ROOT/.devshell-home";
+            export XDG_CONFIG_HOME="$HOME/.config";
+            export XDG_CACHE_HOME="$HOME/.cache";
+            export XDG_DATA_HOME="$HOME/.local/share";
+            export XDG_STATE_HOME="$HOME/.local/state";
+
+            rm -rf "$HOME"
+            mkdir -p "$HOME" "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME"
+            eval "$(${pkgs.starship}/bin/starship init bash)"
+
+            log_file="$HOME/shell-setup.log"
+
+            ${lib.optionalString (pre-commit-script != null) ''
+              install_pre_commit() {
+                ${pre-commit-script}
               }
-              setup_pre_commit
+              start_spinner "Installing pre-commit hooks..."
+              printf "[Pre-commit installation]\n" >>"$log_file"
+              install_pre_commit >>"$log_file" 2>&1
+              status=$?
+              stop_spinner "$spinner_pid"
+              if [ "$status" = "0" ]; then
+                report_status success "Pre-commit installed successfully."
+              else
+                report_status failure "Pre-commit installation failed."
+              fi
             ''}
 
-            setup_git_and_ssh_auth() {
-              success() {
-                echo "$G✓$RT Git and SSH setup completed successfully." >&2
-              }
-              failure() {
-                echo "$R✗$RT Git and SSH setup failed: $1" >&2
-              }
-              run_command mkdir -p "$HOME/.ssh" || { failure "failed to create .ssh directory"; return 1; }
-              run_command touch "$HOME/.ssh/known_hosts" || { failure "failed to create known_hosts file"; return 1; }
-              run_command ssh-keyscan github.com >> "$HOME/.ssh/known_hosts" 2>/dev/null \
-                || { failure "failed to fetch and write github.com host key"; return 1; }
-              run_command eval "$(ssh-agent -s)" || { failure "error starting ssh-agent"; return 1; }
-              run_command ${pkgs.dotenv-cli}/bin/dotenv -f .env -- sh -c '
-                set -euo pipefail
+            git_ssh_setup() {
+              mkdir -p "$HOME/.ssh" && chmod 700 "$HOME/.ssh" \
+                || { echo "Error: failed to create .ssh directory"; return 1; }
+              touch "$HOME/.ssh/known_hosts" && chmod 600 "$HOME/.ssh/known_hosts" \
+                || { echo "Error: failed to create known_hosts file"; return 1; }
+              ssh-keyscan github.com >> "$HOME/.ssh/known_hosts" 2>/dev/null \
+                || { echo "Error: failed to fetch github.com host key"; return 1; }
+              eval "$(ssh-agent -s)" \
+                || { echo "Error: ssh-agent initialization failed"; return 1; }
+              ${pkgs.dotenv-cli}/bin/dotenv -f .env -- sh -c '
+                set -e
                 git config --global user.name "$GITHUB_USERNAME"
                 git config --global user.email "$GITHUB_USEREMAIL"
-              ' || { failure "failed to set git username and email"; return 1; }
-              run_command ${pkgs.dotenv-cli}/bin/dotenv -f .env -- sh -c '
-                set -euo pipefail
-                printf "%s\n" "$GITHUB_AUTH_PRIVATE_KEY" | ssh-add -
-              ' || { failure "failed to add private key to ssh-agent"; return 1; }
-              success
+              ' || { echo "Error: failed to set git username and email"; return 1; }
+              ${pkgs.dotenv-cli}/bin/dotenv -f .env -- sh -c '
+                set -e
+                if [ -f "$GITHUB_AUTH_PRIVATE_KEY" ]; then
+                  ssh-add "$GITHUB_AUTH_PRIVATE_KEY"
+                else
+                  printf '%s\n' "$GITHUB_AUTH_PRIVATE_KEY" | ssh-add -
+                fi
+              ' || { echo "Error: failed to add private key to ssh-agent"; return 1; }
             }
-            setup_git_and_ssh_auth
+            start_spinner "Setting up Git and SSH..."
+            printf "\n[Git + SSH setup]\n" >>"$log_file"
+            git_ssh_setup >>"$log_file" 2>&1
+            status=$?
+            stop_spinner "$spinner_pid"
+            if [ "$status" = "0" ]; then
+              report_status success "Git and SSH setup completed successfully."
+            else
+              report_status failure "Git and SSH setup failed."
+            fi
 
             cleanup() {
-              run_command eval "$(ssh-agent -k)" 2>&1
-              run_command rm -rf "$HOME"
+              eval "$(ssh-agent -k)" >/dev/null 2>&1 || true
+              rm -rf "$HOME"
             }
             trap cleanup EXIT
           '';

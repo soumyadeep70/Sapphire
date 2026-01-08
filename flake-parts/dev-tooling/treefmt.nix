@@ -1,15 +1,12 @@
 # --- flake-parts/dev-tooling/treefmt.nix
 { inputs, ... }:
 {
-  imports = with inputs; [ inputs.treefmt-nix.flakeModule ];
+  imports = with inputs; [ treefmt-nix.flakeModule ];
 
   perSystem =
     { pkgs, ... }:
     {
       treefmt = {
-        # treefmt is a formatting tool that saves you time
-        # - https://numtide.github.io/treefmt/
-        # - https://github.com/numtide/treefmt-nix
         package = pkgs.treefmt;
         flakeCheck = true;
         flakeFormatter = true;
@@ -36,7 +33,7 @@
           jsonfmt.enable = true;
           # mdformat.enable = true;
 
-          # shellcheck.enable = true;
+          shellcheck.enable = true;
           # shfmt.enable = true;
 
           # actionlint.enable = true;

@@ -21,8 +21,8 @@ in
       type = lib.types.submodule {
         options = {
           device = lib.mkOption {
-            type = lib.types.strMatching "^/dev/disk/by-id/.+";
-            description = "Main disk device (by-id)";
+            type = lib.types.strMatching "^/dev.+";
+            description = "Main disk device";
             example = "/dev/disk/by-id/nvme-XXXX";
           };
           rawBtrfsMountpoint = lib.mkOption {

@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+TMP_BTRFS_MP="/tmp-btrfs"
+
+cleanup() {
+  if mountpoint -q "$TMP_BTRFS_MP" 2>/dev/null; then
+    umount "$TMP_BTRFS_MP" || true
+  fi
+}
+trap cleanup EXIT
+
+mkdir -p "$TMP_BTRFS_MP"
+
+if ! mount -t btrfs -o subvol=/ "$BLOCK_DEV" "$TMP_BTRFS_MP"; then
+  echo "Error: Failed to mount $BLOCK_DEV" >&2
+  exit 1
+fi
+
+mkdir -p "$TMP_BTRFS_MP/$ROOT_SUBVOL_NAME"
+
+if [[ -e "$TMP_BTRFS_MP/$ROOT_SUBVOL_NAME/current" ]]; then
+  timestamp=$(date --date="@$(stat -c %Y "$TMP_BTRFS_MP/$ROOT_SUBVOL_NAME/current")" "+%Y-%m-%d_%H:%M:%S")
+
+  if ! mv "$TMP_BTRFS_MP/$ROOT_SUBVOL_NAME/current" "$TMP_BTRFS_MP/$ROOT_SUBVOL_NAME/$timestamp"; then
+    echo "Error: Failed to rename current subvolume" >&2
+    exit 1
+  fi
+
+  echo "Archived current subvolume as: $ROOT_SUBVOL_NAME/$timestamp"
+fi
+
+if ! btrfs subvolume create "$TMP_BTRFS_MP/$ROOT_SUBVOL_NAME/current"; then
+  echo "Error: Failed to create new root subvolume" >&2
+  exit 1
+fi
+
+echo "Created new root subvolume"

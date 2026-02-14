@@ -6,21 +6,19 @@
     {
       devShells.default =
         let
-          treefmt-wrapper = if (lib.hasAttr "treefmt" config) then config.treefmt.build.wrapper else null;
-          pre-commit-script =
-            if (lib.hasAttr "pre-commit" config) then config.pre-commit.installationScript else null;
+          treefmt-wrapper = config.treefmt.build.wrapper or null;
+          files-wrapper = config.treefmt.writer.drv or null;
+          pre-commit-script = config.pre-commit.installationScript or null;
           scripts = import ./scripts { inherit lib pkgs; };
         in
         pkgs.mkShell {
           packages =
             builtins.attrValues scripts
             ++ [
-              pkgs.pre-commit
               pkgs.openssh
-              pkgs.nixd
-              pkgs.nix-output-monitor
             ]
-            ++ lib.optional (treefmt-wrapper != null) treefmt-wrapper;
+            ++ lib.optional (treefmt-wrapper != null) treefmt-wrapper
+            ++ lib.optional (files-wrapper != null) files-wrapper;
 
           shellHook = ''
             help() {
@@ -36,12 +34,12 @@
                   printf '{{ Foreground "#FF0000" "✗ %s" }}' "$*" ;;
                 *)
                   printf '%s' "$*" ;;
-              esac | ${pkgs.gum}/bin/gum format -t template
+              esac | ${lib.getExe pkgs.gum} format -t template
               printf '\n'
             }
 
             start_spinner() {
-              ${pkgs.gum}/bin/gum spin --spinner points --title "$1" -- sleep infinity &
+              ${lib.getExe pkgs.gum} spin --spinner points --title "$1" -- sleep infinity &
               spinner_pid=$!
             }
 
@@ -59,7 +57,7 @@
 
             rm -rf "$HOME"
             mkdir -p "$HOME" "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME"
-            eval "$(${pkgs.starship}/bin/starship init bash)"
+            eval "$(${lib.getExe pkgs.starship} init bash)"
 
             log_file="$HOME/shell-setup.log"
 
@@ -88,12 +86,12 @@
                 || { echo "Error: failed to fetch github.com host key"; return 1; }
               eval "$(ssh-agent -s)" \
                 || { echo "Error: ssh-agent initialization failed"; return 1; }
-              ${pkgs.dotenv-cli}/bin/dotenv -f .env -- sh -c '
+              ${lib.getExe pkgs.dotenv-cli} -f .env -- sh -c '
                 set -e
                 git config --global user.name "$GITHUB_USERNAME"
                 git config --global user.email "$GITHUB_USEREMAIL"
               ' || { echo "Error: failed to set git username and email"; return 1; }
-              ${pkgs.dotenv-cli}/bin/dotenv -f .env -- sh -c '
+              ${lib.getExe pkgs.dotenv-cli} -f .env -- sh -c '
                 set -e
                 if [ -f "$GITHUB_AUTH_PRIVATE_KEY" ]; then
                   ssh-add "$GITHUB_AUTH_PRIVATE_KEY"

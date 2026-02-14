@@ -26,8 +26,8 @@ in
       ]
       [ "wan1" ]
     ];
-    connections.eth1 = mkConnection "exampleHost1" "eth0";
-    connections.wifi = mkConnection "exampleHost2" "wlp3s0";
+    # connections.eth1 = mkConnection "exampleHost1" "eth0";
+    # connections.wifi = mkConnection "exampleHost2" "wlp3s0";
     interfaces.eth1 = {
       addresses = [ "192.168.0.1" ];
       network = "home";

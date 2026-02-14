@@ -1,5 +1,5 @@
 # --- flake-parts/dev-tooling/pre-commit-hooks.nix
-{ inputs, lib, ... }:
+{ inputs, ... }:
 {
   imports = with inputs; [ pre-commit-hooks.flakeModule ];
 
@@ -8,7 +8,7 @@
     {
       pre-commit.settings =
         let
-          treefmt-wrapper = if (lib.hasAttr "treefmt" config) then config.treefmt.build.wrapper else null;
+          treefmt-wrapper = config.treefmt.build.wrapper or null;
         in
         {
           excludes = [ "flake.lock" ];

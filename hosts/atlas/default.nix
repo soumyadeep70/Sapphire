@@ -19,13 +19,13 @@
   #   computeRuntime = "legacy";
   # };
 
-  nixpkgs.config.permittedInsecurePackages = [
-    "intel-media-sdk-23.2.2"
-  ];
+  # nixpkgs.config.permittedInsecurePackages = [
+  #   "intel-media-sdk-23.2.2"
+  # ];
   hardware.graphics = {
     extraPackages = with pkgs; [
       intel-media-driver
-      intel-media-sdk
+      # intel-media-sdk
       intel-compute-runtime-legacy1
     ];
     extraPackages32 = with pkgs.pkgsi686Linux; [

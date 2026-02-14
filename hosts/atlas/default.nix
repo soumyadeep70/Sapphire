@@ -11,6 +11,7 @@
     inputs.nixos-hardware.nixosModules.common-pc-laptop-hdd
     inputs.nixos-hardware.nixosModules.common-pc-laptop-ssd
     self.nixosModules.sapphire
+    ./hardware-configuration.nix
   ];
 
   # hardware.intelgpu = {

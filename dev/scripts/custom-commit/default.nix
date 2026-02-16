@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs, ... }:
 
 rec {
   name = "commit";

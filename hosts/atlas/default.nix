@@ -1,12 +1,11 @@
 {
   inputs,
   self,
-  pkgs,
   ...
 }:
 {
   imports = [
-    # inputs.nixos-hardware.nixosModules.common-cpu-intel
+    inputs.nixos-hardware.nixosModules.common-cpu-intel
     inputs.nixos-hardware.nixosModules.common-pc-laptop
     inputs.nixos-hardware.nixosModules.common-pc-laptop-hdd
     inputs.nixos-hardware.nixosModules.common-pc-laptop-ssd
@@ -14,24 +13,14 @@
     ./hardware-configuration.nix
   ];
 
-  # hardware.intelgpu = {
-  #   driver = "i915";
-  #   vaapiDriver = "intel-media-driver";
-  #   computeRuntime = "legacy";
-  # };
-
   # nixpkgs.config.permittedInsecurePackages = [
   #   "intel-media-sdk-23.2.2"
   # ];
-  hardware.graphics = {
-    extraPackages = with pkgs; [
-      intel-media-driver
-      # intel-media-sdk
-      intel-compute-runtime-legacy1
-    ];
-    extraPackages32 = with pkgs.pkgsi686Linux; [
-      intel-media-driver
-    ];
+  hardware.intelgpu = {
+    driver = "i915";
+    vaapiDriver = "intel-media-driver";
+    computeRuntime = "legacy";
+    # mediaRuntime = "intel-media-sdk";
   };
 
   # System
@@ -68,12 +57,18 @@
     boot.enable = true;
     storage = {
       enable = true;
-      mainDisk = {
-        device = "/dev/vda";
-        swapSize = "4G";
+      disko = {
+        enable = true;
+        mainDisk.device = "/dev/vda";
+        luksEncryption.enable = true;
+        compression.enable = true;
+        swap = {
+          enable = true;
+          size = "16G";
+        };
       };
+      impermanence.enable = true;
     };
-    impermanence.enable = true;
     nix.enable = true;
     hardware = {
       enableAllFirmware = true;

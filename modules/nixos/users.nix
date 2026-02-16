@@ -15,14 +15,24 @@ let
           attrs
         ]);
       default = [ ];
-      description = "Specify nixos-impermanence compatible str/attrs for directories";
-      example = [
-        ".local/share/direnv"
-        {
-          directory = ".nixops";
-          mode = "0700";
-        }
-      ];
+      description = lib.literalMD ''
+        Per-user directories to persist. Supports XDG variable substitution:
+        - `@configHome` → XDG_CONFIG_HOME (default: `~/.config`)
+        - `@dataHome` → XDG_DATA_HOME (default: `~/.local/share`)
+        - `@cacheHome` → XDG_CACHE_HOME (default: `~/.cache`)
+        - `@stateHome` → XDG_STATE_HOME (default: `~/.local/state`)
+
+        Example: `"@configHome/nvim"` expands to `~/.config/nvim`
+      '';
+      example = lib.literalExpression ''
+        [
+          "@dataHome/direnv"
+          {
+            directory = ".nixops";
+            mode = "0700";
+          }
+        ]
+      '';
     };
     extraPersistentFiles = lib.mkOption {
       type =
@@ -32,8 +42,16 @@ let
           attrs
         ]);
       default = [ ];
-      description = "Specify nixos-impermanence compatible str/attrs for files";
-      example = [ ".screenrc" ];
+      description = lib.literalMD ''
+        Per-user files to persist. Supports XDG variable substitution
+        - `@configHome` → XDG_CONFIG_HOME (default: `~/.config`)
+        - `@dataHome` → XDG_DATA_HOME (default: `~/.local/share`)
+        - `@cacheHome` → XDG_CACHE_HOME (default: `~/.cache`)
+        - `@stateHome` → XDG_STATE_HOME (default: `~/.local/state`)
+
+        Example: `"@configHome/nvim"` expands to `~/.config/nvim`
+      '';
+      example = lib.literalExpression ''[ ".screenrc" ]'';
     };
     extraGroups = lib.mkOption {
       type = lib.types.listOf lib.types.str;
@@ -86,7 +104,7 @@ in
   };
 
   config = {
-    sapphire.nixos.impermanence.perUser = lib.mapAttrs (_: userCfg: {
+    sapphire.nixos.storage.impermanence.perUser = lib.mapAttrs (_: userCfg: {
       dirs = [
         "@dataHome/Trash"
         "Downloads"

@@ -97,7 +97,7 @@ in
       LC_COLLATE = cfg.locale;
     };
 
-    sapphire.nixos.impermanence.system = {
+    sapphire.nixos.storage.impermanence.system = {
       dirs = [
         "/var/lib/nixos"
         "/var/lib/bluetooth"

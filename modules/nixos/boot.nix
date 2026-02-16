@@ -28,6 +28,16 @@ in
           memtest86.enable = true;
         };
       };
+
+      plymouth = {
+        enable = true;
+        theme = "circle_hud";
+        themePackages = [
+          (pkgs.adi1090x-plymouth-themes.override {
+            selected_themes = [ "circle_hud" ];
+          })
+        ];
+      };
     };
 
     environment.systemPackages = [ pkgs.efibootmgr ];

@@ -13,6 +13,9 @@
     ./hardware-configuration.nix
   ];
 
+  services.qemuGuest.enable = true;
+  services.spice-vdagentd.enable = true;
+
   # nixpkgs.config.permittedInsecurePackages = [
   #   "intel-media-sdk-23.2.2"
   # ];

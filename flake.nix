@@ -30,7 +30,6 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-    nix-topology.url = "github:oddlama/nix-topology";
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -1,3 +1,6 @@
+## VM -- Virtio (Video) with 3D acceleration
+## CPU -- i3 7020U
+
 {
   inputs,
   self,

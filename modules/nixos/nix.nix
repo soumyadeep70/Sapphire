@@ -68,11 +68,11 @@
         channel.enable = false;
       };
 
-    sapphire.nixos.users.shared = {
-      extraPersistentDirs = [
+    sapphire.nixos.storage.impermanence.users.shared = {
+      dirs = [
         "@cacheHome/nix"
       ];
-      extraPersistentFiles = [
+      files = [
         "@dataHome/nix/repl-history"
       ];
     };

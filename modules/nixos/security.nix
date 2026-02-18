@@ -11,11 +11,6 @@
       rtkit.enable = true;
       tpm2.enable = true;
 
-      sudo.extraConfig = ''
-        Defaults lecture=never
-        Defaults timestamp_timeout=30
-      '';
-
       polkit = {
         enable = true;
         # extraConfig = ''

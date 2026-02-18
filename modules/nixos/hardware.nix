@@ -24,13 +24,13 @@ in
     (lib.mkIf cfg.enableFwupd {
       services.fwupd.enable = true;
 
-      sapphire.nixos.system = {
-        extraPersistentDirs = [
+      sapphire.nixos.storage.impermanence.system = {
+        dirs = [
           "/var/lib/fwupd/gnupg"
           "/var/lib/fwupd/metadata"
           "/var/lib/fwupd/pki"
         ];
-        extraPersistentFiles = [
+        files = [
           "/var/lib/fwupd/pending.db"
         ];
       };
@@ -58,7 +58,7 @@ in
         wireplumber.enable = true;
       };
       services.pulseaudio.enable = lib.mkForce false;
-      sapphire.nixos.users.shared.extraPersistentDirs = [
+      sapphire.nixos.storage.impermanence.users.shared.dirs = [
         "@stateHome/wireplumber"
       ];
     })

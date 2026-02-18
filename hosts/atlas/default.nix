@@ -32,27 +32,15 @@
     machineId = "7c2a19f5e3b84d62a1c90f5e8b42d71a";
     locale = "en_US.UTF-8";
     timeZone = "Asia/Kolkata";
-    # extraPersistentDirs = [];
-    # extraPersistentFiles = [];
     stateVersion = "25.11";
   };
 
   # Users
   sapphire.nixos.users = {
-    # shared = {
-    #   extraPersistentDirs = [];
-    #   extraPersistentFiles = [];
-    #   extraGroups = [];
-    # };
-    perUser = {
-      cypher = {
-        isAdmin = true;
-        description = "Cypher";
-        hashedPassword = "$6$7fad29ea$7HlcvyeGs6LLGTfhIVk.opyphoYrFWXKJxWC7CJKcUfhVg4B3l1xYCEOY9I7Ks3Z5oICOTwolOjkfevcTYTjI/";
-        # extraPersistentDirs = [];
-        # extraPersistentFiles = [];
-        # extraGroups = [];
-      };
+    cypher = {
+      isAdmin = true;
+      description = "Cypher";
+      hashedPassword = "$6$7fad29ea$7HlcvyeGs6LLGTfhIVk.opyphoYrFWXKJxWC7CJKcUfhVg4B3l1xYCEOY9I7Ks3Z5oICOTwolOjkfevcTYTjI/";
     };
   };
 
@@ -70,7 +58,23 @@
           size = "16G";
         };
       };
-      impermanence.enable = true;
+      impermanence = {
+        enable = true;
+        # system = {
+        #   dirs = [];
+        #   files = [];
+        # };
+        # users = {
+        #   shared = {
+        #     dirs = [];
+        #     files = [];
+        #   };
+        # };
+        # perUser.cypher = {
+        #   dirs = [];
+        #   files = [];
+        # };
+      };
     };
     nix.enable = true;
     hardware = {
@@ -90,5 +94,11 @@
       };
     };
     security.enable = true;
+    # services.openssh = {
+    #   enable = true;
+    #   perUserPublicKeys = {
+    #     cypher = [];
+    #   };
+    # };
   };
 }

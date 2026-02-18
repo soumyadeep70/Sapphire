@@ -15,8 +15,13 @@ in
 
   options.sapphire.nixos.storage =
     let
-      mkPersistenceOptions =
-        { dirsDesc, filesDesc }:
+      mkImpermanenceOptions =
+        {
+          dirsDesc,
+          dirsExample,
+          filesDesc,
+          filesExample,
+        }:
         {
           dirs = lib.mkOption {
             type =
@@ -27,7 +32,7 @@ in
               ]);
             default = [ ];
             description = dirsDesc;
-            internal = true;
+            example = dirsExample;
           };
           files = lib.mkOption {
             type =
@@ -38,9 +43,62 @@ in
               ]);
             default = [ ];
             description = filesDesc;
-            internal = true;
+            example = filesExample;
           };
         };
+
+      mkSystemImpermanenceOptions = mkImpermanenceOptions {
+        dirsDesc = "System directories to persist";
+        dirsExample = lib.literalExpression ''
+          [
+            "/var/lib/bluetooth"
+            "/var/lib/nixos"
+            { directory = "/var/lib/colord"; user = "colord"; group = "colord"; mode = "u=rwx,g=rx,o="; }
+          ]
+        '';
+        filesDesc = "System files to persist";
+        filesExample = lib.literalExpression ''
+          [
+            "/etc/machine-id"
+            { file = "/var/keys/secret_file"; parentDirectory = { mode = "u=rwx,g=,o="; }; }
+          ]
+        '';
+      };
+
+      mkUserImpermanenceOptions = mkImpermanenceOptions {
+        dirsDesc = lib.literalMD ''
+          Per-user directories to persist. Supports XDG variable substitution:
+          - `@configHome` → XDG_CONFIG_HOME (default: `~/.config`)
+          - `@dataHome` → XDG_DATA_HOME (default: `~/.local/share`)
+          - `@cacheHome` → XDG_CACHE_HOME (default: `~/.cache`)
+          - `@stateHome` → XDG_STATE_HOME (default: `~/.local/state`)
+
+          Example: `"@configHome/nvim"` expands to `~/.config/nvim`
+        '';
+        dirsExample = lib.literalExpression ''
+          [
+           "Pictures"
+           "Documents"
+           "@dataHome/direnv"
+           { directory = ".ssh"; mode = "0700"; }
+           { directory = "@dataHome/keyrings"; mode = "0700"; }
+          ]
+        '';
+        filesDesc = lib.literalMD ''
+          Per-user files to persist. Supports XDG variable substitution
+          - `@configHome` → XDG_CONFIG_HOME (default: `~/.config`)
+          - `@dataHome` → XDG_DATA_HOME (default: `~/.local/share`)
+          - `@cacheHome` → XDG_CACHE_HOME (default: `~/.cache`)
+          - `@stateHome` → XDG_STATE_HOME (default: `~/.local/state`)
+
+          Example: `"@configHome/nvim"` expands to `~/.config/nvim`
+        '';
+        filesExample = lib.literalExpression ''
+          [
+            ".screenrc"
+          ]
+        '';
+      };
     in
     {
       impermanence = lib.mkOption {
@@ -49,27 +107,34 @@ in
             enable = lib.mkEnableOption "impermanence";
             system = lib.mkOption {
               type = lib.types.submodule {
-                options = mkPersistenceOptions {
-                  dirsDesc = "System directories to persist";
-                  filesDesc = "System files to persist";
-                };
+                options = mkSystemImpermanenceOptions;
               };
               default = { };
               description = "System persistence config";
-              internal = true;
             };
-            perUser = lib.mkOption {
-              type =
-                with lib.types;
-                attrsOf (submodule {
-                  options = mkPersistenceOptions {
-                    dirsDesc = "per user directories to persist";
-                    filesDesc = "per user files to persist";
+            users = lib.mkOption {
+              type = lib.types.submodule {
+                options = {
+                  shared = lib.mkOption {
+                    type = lib.types.submodule {
+                      options = mkUserImpermanenceOptions;
+                    };
+                    default = { };
+                    description = "Persistence config for all users";
                   };
-                });
+                  perUser = lib.mkOption {
+                    type =
+                      with lib.types;
+                      attrsOf (submodule {
+                        options = mkUserImpermanenceOptions;
+                      });
+                    default = { };
+                    description = "Per user persistence config";
+                  };
+                };
+              };
               default = { };
-              description = "Per user persistence config";
-              internal = true;
+              description = "Users persistence config";
             };
           };
         };
@@ -85,7 +150,11 @@ in
           Enable and configure it first.
         '';
       }
-    ];
+    ]
+    ++ lib.mapAttrsToList (name: _: {
+      assertion = lib.hasAttr name config.sapphire.nixos.users;
+      message = "impermanence: user ${name} not defined";
+    }) cfg.impermanence.users.perUser;
 
     # https://discourse.nixos.org/t/impermanence-vs-systemd-initrd-w-tpm-unlocking/25167/3
     boot.initrd.systemd = {
@@ -219,11 +288,11 @@ in
             allowTrash = true;
             enableWarnings = true;
 
-            directories = normalize userCfg.dirs;
-            files = normalize userCfg.files;
+            directories = (normalize cfg.impermanence.users.shared.dirs) ++ (normalize userCfg.dirs);
+            files = (normalize cfg.impermanence.users.shared.files) ++ (normalize userCfg.files);
           };
         }
       )
-    ) cfg.impermanence.perUser;
+    ) cfg.impermanence.users.perUser;
   };
 }

@@ -38,34 +38,6 @@ in
       description = "Set the timezone";
       example = "Asia/Kolkata";
     };
-    extraPersistentDirs = lib.mkOption {
-      type =
-        with lib.types;
-        listOf (oneOf [
-          str
-          attrs
-        ]);
-      default = [ ];
-      description = "Specify nixos-impermanence compatible str/attrs for directories";
-      example = [
-        ".local/share/direnv"
-        {
-          directory = ".nixops";
-          mode = "0700";
-        }
-      ];
-    };
-    extraPersistentFiles = lib.mkOption {
-      type =
-        with lib.types;
-        listOf (oneOf [
-          str
-          attrs
-        ]);
-      default = [ ];
-      description = "Specify nixos-impermanence compatible str/attrs for files";
-      example = [ ".screenrc" ];
-    };
     stateVersion = lib.mkOption {
       type = lib.types.strMatching "^[0-9]{2}\.[0-9]{2}$";
       description = "Nixos system stateversion. See `system.stateVersion` nixos option";
@@ -106,13 +78,10 @@ in
         "/var/lib/systemd/timesync"
         "/var/lib/libvirt"
         "/var/lib/tpm2-tss"
-      ]
-      ++ cfg.extraPersistentDirs;
-
+      ];
       files = [
         "/var/lib/systemd/random-seed"
-      ]
-      ++ cfg.extraPersistentFiles;
+      ];
     };
 
     system = { inherit (cfg) stateVersion; };

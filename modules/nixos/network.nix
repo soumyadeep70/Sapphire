@@ -101,7 +101,9 @@ in
 
   config = lib.mkIf cfg.enable {
     networking.networkmanager.enable = true;
-    sapphire.nixos.users.shared.extraGroups = [ "networkmanager" ];
+    users.users = lib.genAttrs (builtins.attrNames config.sapphire.nixos.users) (_: {
+      extraGroups = [ "networkmanager" ];
+    });
 
     networking.firewall = lib.mkIf cfg.firewall.enable (
       let
@@ -117,7 +119,7 @@ in
       }
     );
 
-    sapphire.nixos.system.extraPersistentDirs = [
+    sapphire.nixos.storage.impermanence.system.dirs = [
       "/etc/NetworkManager/system-connections"
     ];
   };

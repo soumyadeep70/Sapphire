@@ -16,17 +16,14 @@ jobs:
       - name: "Checking out repository..."
         uses: actions/checkout@v4
       - name: "Installing and configuring the nix package manager..."
-        uses: DeterminateSystems/nix-installer-action@main
+        uses: cachix/install-nix-action@v31
         with:
-          extra-conf: |
+          extra_nix_config: |
             accept-flake-config = true
-        # - name: "Installing and configuring the nix package manager..."
-        #   uses: cachix/install-nix-action@v31
-        #   with:
-        #     extra_nix_config: |
-        #       accept-flake-config = true
-
+            experimental-features = "nix-command flakes pipe-operators"
+        # NOTE Install any necessary packages here
         # - name: "Setting up packages..."
+
         run: |
           nix profile install nixpkgs#nix-fast-build # parallel nix builder
       - name: "Running `nix flake check`..."

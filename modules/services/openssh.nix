@@ -27,7 +27,7 @@ in
   config = lib.mkIf cfg.enable {
     assertions = lib.mapAttrsToList (name: _: {
       assertion = lib.hasAttr name config.sapphire.users;
-      message = "impermanence: user ${name} not defined";
+      message = "openssh: user ${name} not defined";
     }) cfg.perUserPublicKeys;
 
     services.openssh = {

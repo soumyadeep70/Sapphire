@@ -20,12 +20,11 @@ jobs:
         with:
           extra_nix_config: |
             accept-flake-config = true
-            experimental-features = "nix-command flakes pipe-operators"
-        # NOTE Install any necessary packages here
-        # - name: "Setting up packages..."
-
+            extra_nix_config = |
+              experimental-features = nix-command flakes pipe-operators
+      - name: "Setting up packages..."
         run: |
-          nix profile install nixpkgs#nix-fast-build # parallel nix builder
+          nix profile install nixpkgs#nix-fast-build
       - name: "Running `nix flake check`..."
         run: nix-fast-build --skip-cached --no-nom
         # NOTE: You can also limit the build only to the currentSystem if needed

@@ -233,8 +233,8 @@ in
       inherit (cfg.impermanence.system) files;
     };
 
-    home-manager.users = lib.mapAttrs (
-      _: userCfg:
+    home-manager.users = lib.genAttrs (builtins.attrNames config.sapphire.users) (
+      name:
       (
         { config, lib, ... }:
         let
@@ -288,11 +288,15 @@ in
             allowTrash = true;
             enableWarnings = true;
 
-            directories = (normalize cfg.impermanence.users.shared.dirs) ++ (normalize userCfg.dirs);
-            files = (normalize cfg.impermanence.users.shared.files) ++ (normalize userCfg.files);
+            directories =
+              (normalize cfg.impermanence.users.shared.dirs)
+              ++ (normalize (cfg.impermanence.users.perUser.${name}.dirs or [ ]));
+            files =
+              (normalize cfg.impermanence.users.shared.files)
+              ++ (normalize (cfg.impermanence.users.perUser.${name}.files or [ ]));
           };
         }
       )
-    ) cfg.impermanence.users.perUser;
+    );
   };
 }

@@ -4,10 +4,10 @@
   ...
 }:
 let
-  cfg = config.sapphire.nixos.services.openssh;
+  cfg = config.sapphire.services.openssh;
 in
 {
-  options.sapphire.nixos.services.openssh = {
+  options.sapphire.services.openssh = {
     enable = lib.mkEnableOption "openssh config";
     perUserPublicKeys = lib.mkOption {
       type = with lib.types; attrsOf (listOf str);
@@ -26,7 +26,7 @@ in
 
   config = lib.mkIf cfg.enable {
     assertions = lib.mapAttrsToList (name: _: {
-      assertion = lib.hasAttr name config.sapphire.nixos.users;
+      assertion = lib.hasAttr name config.sapphire.users;
       message = "impermanence: user ${name} not defined";
     }) cfg.perUserPublicKeys;
 
@@ -42,14 +42,14 @@ in
       openssh.authorizedKeys.keys = pubKeys;
     }) cfg.perUserPublicKeys;
 
-    sapphire.nixos.storage.impermanence.system.files = [
+    sapphire.storage.impermanence.system.files = [
       "/etc/ssh/ssh_host_ed25519_key"
       "/etc/ssh/ssh_host_ed25519_key.pub"
       "/etc/ssh/ssh_host_rsa_key"
       "/etc/ssh/ssh_host_rsa_key.pub"
     ];
 
-    sapphire.nixos.storage.impermanence.users.shared.dirs = [
+    sapphire.storage.impermanence.users.shared.dirs = [
       ".ssh"
     ];
   };

@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.sapphire.nixos.boot;
+  cfg = config.sapphire.boot;
 in
 {
-  options.sapphire.nixos.boot.enable = lib.mkEnableOption "boot config (systemd-boot)";
+  options.sapphire.boot.enable = lib.mkEnableOption "boot config (systemd-boot)";
 
   config = lib.mkIf cfg.enable {
     boot = {

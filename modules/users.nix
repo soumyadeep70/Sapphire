@@ -4,10 +4,10 @@
   ...
 }:
 let
-  cfg = config.sapphire.nixos.users;
+  cfg = config.sapphire.users;
 in
 {
-  options.sapphire.nixos.users = lib.mkOption {
+  options.sapphire.users = lib.mkOption {
     type =
       with lib.types;
       attrsOf (submodule {
@@ -40,7 +40,7 @@ in
   };
 
   config = {
-    sapphire.nixos.storage.impermanence.users.shared = {
+    sapphire.storage.impermanence.users.shared = {
       dirs = [
         "@dataHome/Trash"
         "Downloads"
@@ -67,7 +67,7 @@ in
       home = {
         username = user;
         homeDirectory = "/home/${user}";
-        inherit (config.sapphire.nixos.system) stateVersion; # TODO: do smth abt it
+        inherit (config.sapphire.system) stateVersion; # TODO: do smth abt it
       };
     }) cfg;
   };

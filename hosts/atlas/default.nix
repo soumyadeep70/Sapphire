@@ -30,7 +30,7 @@
   };
 
   # System
-  sapphire.nixos.system = {
+  sapphire.system = {
     hostName = "atlas";
     machineId = "7c2a19f5e3b84d62a1c90f5e8b42d71a";
     locale = "en_US.UTF-8";
@@ -39,7 +39,7 @@
   };
 
   # Users
-  sapphire.nixos.users = {
+  sapphire.users = {
     cypher = {
       isAdmin = true;
       description = "Cypher";
@@ -47,7 +47,7 @@
     };
   };
 
-  sapphire.nixos = {
+  sapphire = {
     boot.enable = true;
     storage = {
       enable = true;

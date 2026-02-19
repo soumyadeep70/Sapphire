@@ -4,9 +4,9 @@
   ...
 }:
 {
-  options.sapphire.nixos.security.enable = lib.mkEnableOption "security config";
+  options.sapphire.security.enable = lib.mkEnableOption "security config";
 
-  config = lib.mkIf config.sapphire.nixos.security.enable {
+  config = lib.mkIf config.sapphire.security.enable {
     security = {
       rtkit.enable = true;
       tpm2.enable = true;

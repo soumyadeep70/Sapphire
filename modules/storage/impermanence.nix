@@ -6,14 +6,14 @@
   ...
 }:
 let
-  cfg = config.sapphire.nixos.storage;
+  cfg = config.sapphire.storage;
 in
 {
   imports = [
     inputs.impermanence.nixosModules.default
   ];
 
-  options.sapphire.nixos.storage =
+  options.sapphire.storage =
     let
       mkImpermanenceOptions =
         {
@@ -152,7 +152,7 @@ in
       }
     ]
     ++ lib.mapAttrsToList (name: _: {
-      assertion = lib.hasAttr name config.sapphire.nixos.users;
+      assertion = lib.hasAttr name config.sapphire.users;
       message = "impermanence: user ${name} not defined";
     }) cfg.impermanence.users.perUser;
 

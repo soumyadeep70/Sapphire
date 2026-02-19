@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.sapphire.nixos.hardware;
+  cfg = config.sapphire.hardware;
 in
 {
-  options.sapphire.nixos.hardware = {
+  options.sapphire.hardware = {
     enableAllFirmware = lib.mkEnableOption "all firmwares";
     enableFwupd = lib.mkEnableOption "fwupd (firmware updater)";
     enableGraphicsDrivers = lib.mkEnableOption "graphics support (opengl/ vulkan)";
@@ -24,7 +24,7 @@ in
     (lib.mkIf cfg.enableFwupd {
       services.fwupd.enable = true;
 
-      sapphire.nixos.storage.impermanence.system = {
+      sapphire.storage.impermanence.system = {
         dirs = [
           "/var/lib/fwupd/gnupg"
           "/var/lib/fwupd/metadata"
@@ -58,7 +58,8 @@ in
         wireplumber.enable = true;
       };
       services.pulseaudio.enable = lib.mkForce false;
-      sapphire.nixos.storage.impermanence.users.shared.dirs = [
+      security.rtkit.enable = lib.mkDefault true;
+      sapphire.storage.impermanence.users.shared.dirs = [
         "@stateHome/wireplumber"
       ];
     })

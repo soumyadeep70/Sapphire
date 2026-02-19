@@ -4,10 +4,10 @@
   ...
 }:
 let
-  cfg = config.sapphire.nixos.system;
+  cfg = config.sapphire.system;
 in
 {
-  options.sapphire.nixos.system = {
+  options.sapphire.system = {
     hostName = lib.mkOption {
       type = lib.types.strMatching "^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$";
       default = "nixos";
@@ -69,7 +69,7 @@ in
       LC_COLLATE = cfg.locale;
     };
 
-    sapphire.nixos.storage.impermanence.system = {
+    sapphire.storage.impermanence.system = {
       dirs = [
         "/var/lib/nixos"
         "/var/lib/bluetooth"

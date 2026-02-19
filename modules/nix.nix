@@ -10,12 +10,12 @@
     inputs.nix-index-database.nixosModules.nix-index
   ];
 
-  options.sapphire.nixos.nix.enable = lib.mkEnableOption ''
+  options.sapphire.nix.enable = lib.mkEnableOption ''
     configure nixpkgs, disable nix channels, use flakes,
     use substituters etc.
   '';
 
-  config = lib.mkIf config.sapphire.nixos.nix.enable {
+  config = lib.mkIf config.sapphire.nix.enable {
     nixpkgs = {
       config.allowUnfree = true;
       overlays = lib.optional (
@@ -68,7 +68,7 @@
         channel.enable = false;
       };
 
-    sapphire.nixos.storage.impermanence.users.shared = {
+    sapphire.storage.impermanence.users.shared = {
       dirs = [
         "@cacheHome/nix"
       ];

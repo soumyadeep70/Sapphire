@@ -8,7 +8,7 @@
     ./impermanence.nix
   ];
 
-  options.sapphire.nixos.storage = {
+  options.sapphire.storage = {
     enable = lib.mkEnableOption "storage config (btrfs filesystem, encryption etc)";
   };
 }

@@ -5,14 +5,14 @@
   ...
 }:
 let
-  cfg = config.sapphire.nixos.storage;
+  cfg = config.sapphire.storage;
 in
 {
   imports = [
     inputs.disko.nixosModules.default
   ];
 
-  options.sapphire.nixos.storage = {
+  options.sapphire.storage = {
     disko = lib.mkOption {
       type = lib.types.submodule {
         options = {
@@ -298,5 +298,7 @@ in
           };
         };
       };
+
+      security.tpm2.enable = lib.mkDefault cfg.disko.luksEncryption.enable;
     };
 }

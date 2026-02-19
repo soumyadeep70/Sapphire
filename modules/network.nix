@@ -4,7 +4,7 @@
   ...
 }:
 let
-  cfg = config.sapphire.nixos.network;
+  cfg = config.sapphire.network;
 
   extractPort =
     portStr:
@@ -69,7 +69,7 @@ let
       };
 in
 {
-  options.sapphire.nixos.network = {
+  options.sapphire.network = {
     enable = lib.mkEnableOption "networking (networkmanager)";
 
     firewall = {
@@ -101,7 +101,7 @@ in
 
   config = lib.mkIf cfg.enable {
     networking.networkmanager.enable = true;
-    users.users = lib.genAttrs (builtins.attrNames config.sapphire.nixos.users) (_: {
+    users.users = lib.genAttrs (builtins.attrNames config.sapphire.users) (_: {
       extraGroups = [ "networkmanager" ];
     });
 
@@ -119,7 +119,7 @@ in
       }
     );
 
-    sapphire.nixos.storage.impermanence.system.dirs = [
+    sapphire.storage.impermanence.system.dirs = [
       "/etc/NetworkManager/system-connections"
     ];
   };

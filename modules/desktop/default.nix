@@ -28,14 +28,16 @@
 
   services.power-profiles-daemon.enable = true;
   services.upower.enable = true;
-  services.noctalia-shell = {
-    enable = true;
-    package = inputs'.noctalia.packages.default;
-  };
 
   home-manager.sharedModules = lib.singleton {
+    imports = [
+      inputs.noctalia.homeModules.default
+    ];
     programs.niri.config = null;
-    # programs.noctalia-shell.package = null;
+    programs.noctalia-shell = {
+      systemd.enable = true;
+      package = inputs'.noctalia.packages.default;
+    };
     programs.ghostty = {
       enable = true;
       systemd.enable = true;

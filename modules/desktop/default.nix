@@ -24,9 +24,6 @@
     enable = true;
     package = pkgs.niri-stable;
   };
-  home-manager.sharedModules = lib.singleton {
-    programs.niri.config = null;
-  };
   # stylix.enable = true;
 
   services.power-profiles-daemon.enable = true;
@@ -36,4 +33,12 @@
     package = inputs'.noctalia.packages.default;
   };
 
+  home-manager.sharedModules = lib.singleton {
+    programs.niri.config = null;
+    # programs.noctalia-shell.package = null;
+    programs.ghostty = {
+      enable = true;
+      systemd.enable = true;
+    };
+  };
 }

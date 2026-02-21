@@ -2,7 +2,6 @@
   lib,
   config,
   inputs,
-  self,
   ...
 }:
 {
@@ -16,12 +15,7 @@
   '';
 
   config = lib.mkIf config.sapphire.nix.enable {
-    nixpkgs = {
-      config.allowUnfree = true;
-      overlays = lib.optional (
-        lib.hasAttr "overlays" self && lib.hasAttr "default" self.overlays
-      ) self.overlays.default;
-    };
+    nixpkgs.config.allowUnfree = true;
 
     programs.nix-index-database.comma.enable = true;
 

@@ -103,5 +103,9 @@
     #     cypher = [];
     #   };
     # };
+    desktop.niri = {
+      enable = true;
+      flavor = "dank-material-shell";
+    };
   };
 }

@@ -1,50 +1,10 @@
-{
-  inputs,
-  inputs',
-  lib,
-  pkgs,
-  ...
-}:
-
-{
+_: {
   imports = [
-    inputs.niri-flake.nixosModules.niri
-    # inputs.stylix.nixosModules.stylix
-    inputs.noctalia.nixosModules.default
+    ./niri
   ];
-
-  nixpkgs.overlays = [ inputs.niri-flake.overlays.niri ];
 
   services.displayManager.sddm = {
     enable = true;
     wayland.enable = true;
-  };
-
-  programs.niri = {
-    enable = true;
-    package = pkgs.niri-stable;
-  };
-  # stylix.enable = true;
-
-  services.power-profiles-daemon.enable = true;
-  services.upower.enable = true;
-  environment.systemPackages = [
-    pkgs.alacritty
-  ];
-
-  home-manager.sharedModules = lib.singleton {
-    imports = [
-      inputs.noctalia.homeModules.default
-    ];
-    programs.niri.config = null;
-    programs.noctalia-shell = {
-      enable = true;
-      systemd.enable = true;
-      package = inputs'.noctalia.packages.default;
-    };
-    programs.ghostty = {
-      enable = true;
-      systemd.enable = true;
-    };
   };
 }

@@ -16,5 +16,16 @@
       enableSystemMonitoring = true;
       dgop.package = inputs'.dgop.packages.default;
     };
+
+    home-manager.sharedModules = lib.singleton {
+      programs.niri.settings.spawn-at-startup = [
+        {
+          argv = [
+            "dms"
+            "run"
+          ];
+        }
+      ];
+    };
   };
 }

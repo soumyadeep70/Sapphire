@@ -27,6 +27,9 @@
     # TODO: move these deps
     services.power-profiles-daemon.enable = true;
     services.upower.enable = true;
+    home-manager.sharedModules = lib.singleton {
+      programs.ghostty.enable = true;
+    };
 
     environment.sessionVariables = {
       CLUTTER_BACKEND = "wayland";

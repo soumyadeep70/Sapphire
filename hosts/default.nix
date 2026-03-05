@@ -11,6 +11,10 @@ let
       system = "x86_64-linux";
       config = import ./atlas;
     };
+    phoenix = {
+      system = "x86_64-linux";
+      config = import ./phoenix;
+    };
   };
 in
 {

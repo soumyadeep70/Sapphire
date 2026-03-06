@@ -20,7 +20,7 @@ let
           else
             [ ]
         )
-        builtins.readDir path 
+        (builtins.readDir path) 
       );
 
   importModules =
@@ -37,7 +37,7 @@ let
         else
           [ ]
       )
-      builtins.readDir path
+      (builtins.readDir path)
     );
 in
 {

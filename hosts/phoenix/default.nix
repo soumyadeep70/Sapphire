@@ -16,14 +16,18 @@
     ./hardware-configuration.nix
   ];
 
-  # nixpkgs.config.permittedInsecurePackages = [
-  #   "intel-media-sdk-23.2.2"
-  # ];
+  nixpkgs.overlays = [
+    self.overlays.default
+  ];
+
+  nixpkgs.config.permittedInsecurePackages = [
+    "intel-media-sdk-23.2.2"
+  ];
   hardware.intelgpu = {
     driver = "i915";
     vaapiDriver = "intel-media-driver";
     computeRuntime = "legacy";
-    # mediaRuntime = "intel-media-sdk";
+    mediaRuntime = "intel-media-sdk";
   };
 
   # System

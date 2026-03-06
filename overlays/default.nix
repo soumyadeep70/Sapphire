@@ -1,4 +1,14 @@
-# --- flake-parts/overlays/default.nix
 _: {
-  flake.overlays.default = _final: _prev: { };
+  flake.overlays.default = final: prev: {
+
+    intel-media-sdk = prev.intel-media-sdk.overrideAttrs (old: {
+      stdenv = prev.gcc13Stdenv;
+      doCheck = false;
+      cmakeFlags = (old.cmakeFlags or []) ++ [
+        "-DBUILD_TESTS=OFF"
+        "-DBUILD_SAMPLES=OFF"
+      ];
+    });
+
+  };
 }

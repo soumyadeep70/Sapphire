@@ -2,7 +2,7 @@
 
 let
   dir = ./.;
-  entries = builtins.readDir dir |> lib.filterAttrs (name: _: name != "default.nix");
+  entries = lib.filterAttrs (name: _: name != "default.nix") (builtins.readDir dir);
 
   validateEntry =
     entry: kind:
@@ -48,9 +48,9 @@ lib.mapAttrs' (_: value: lib.nameValuePair value.name value.package) manifest
     {
       printf "%s\n" "Command|Description"
       printf "%s\n" "${
-        manifest
-        |> lib.mapAttrsToList (_: value: "${value.name}|${value.description}")
-        |> lib.concatStringsSep "\n"
+        lib.concatStringsSep "\n" (
+          lib.mapAttrsToList (_: value: "${value.name}|${value.description}") manifest
+        )
       }"
       printf "%s\n" "help|Display this help message"
     } | ${pkgs.gum}/bin/gum table \

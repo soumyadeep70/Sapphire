@@ -8,10 +8,27 @@ let
     if builtins.pathExists (path + "/default.nix") then
       [ (path + "/default.nix") ]
     else
-      builtins.readDir path
-      |> lib.mapAttrsToList (
+      lib.flatten (
+        lib.mapAttrsToList (
+          name: type:
+          if lib.hasPrefix "_" name then
+            [ ]
+          else if type == "regular" && lib.hasSuffix ".nix" name then
+            [ (path + "/${name}") ]
+          else if type == "directory" then
+            importModulesRecursive (path + "/${name}")
+          else
+            [ ]
+        )
+        builtins.readDir path 
+      );
+
+  importModules =
+    path:
+    lib.flatten (
+      lib.mapAttrsToList (
         name: type:
-        if lib.hasPrefix "_" name then
+        if name == "default.nix" || lib.hasPrefix "_" name then
           [ ]
         else if type == "regular" && lib.hasSuffix ".nix" name then
           [ (path + "/${name}") ]
@@ -20,23 +37,8 @@ let
         else
           [ ]
       )
-      |> lib.flatten;
-
-  importModules =
-    path:
-    builtins.readDir path
-    |> lib.mapAttrsToList (
-      name: type:
-      if name == "default.nix" || lib.hasPrefix "_" name then
-        [ ]
-      else if type == "regular" && lib.hasSuffix ".nix" name then
-        [ (path + "/${name}") ]
-      else if type == "directory" then
-        importModulesRecursive (path + "/${name}")
-      else
-        [ ]
-    )
-    |> lib.flatten;
+      builtins.readDir path
+    );
 in
 {
   flake.nixosModules.sapphire =

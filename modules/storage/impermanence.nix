@@ -3,6 +3,7 @@
   lib,
   config,
   pkgs,
+  specs,
   ...
 }:
 let
@@ -152,7 +153,7 @@ in
       }
     ]
     ++ lib.mapAttrsToList (name: _: {
-      assertion = lib.hasAttr name config.sapphire.users;
+      assertion = lib.hasAttr name specs.users;
       message = "impermanence: user ${name} not defined";
     }) cfg.impermanence.users.perUser;
 
@@ -233,7 +234,7 @@ in
       inherit (cfg.impermanence.system) files;
     };
 
-    home-manager.users = lib.genAttrs (builtins.attrNames config.sapphire.users) (
+    home-manager.users = lib.genAttrs (builtins.attrNames specs.users) (
       name:
       (
         { config, lib, ... }:

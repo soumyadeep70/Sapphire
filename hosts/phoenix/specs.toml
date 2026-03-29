@@ -1,0 +1,24 @@
+[system]
+arch = "x86_64"
+machineId = "9f3c7a2d8e1b4c6fa0d5e97b31c2a864"
+hostName = "phoenix"
+locale = "en_US.UTF-8"
+timeZone = "Asia/Kolkata"
+stateVersion = "26.05"
+
+[network]
+openTCPPorts = []
+openUDPPorts = []
+
+[desktop]
+variant = "dank-material-shell"
+backend = "niri"
+
+
+
+[users.cypher]
+isAdmin = true
+description = "Cypher"
+hashedPassword = "$6$7fad29ea$7HlcvyeGs6LLGTfhIVk.opyphoYrFWXKJxWC7CJKcUfhVg4B3l1xYCEOY9I7Ks3Z5oICOTwolOjkfevcTYTjI/"
+extraGroups = []
+

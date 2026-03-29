@@ -29,26 +29,7 @@
     # mediaRuntime = "intel-media-sdk";
   };
 
-  # System
-  sapphire.system = {
-    hostName = "atlas";
-    machineId = "7c2a19f5e3b84d62a1c90f5e8b42d71a";
-    locale = "en_US.UTF-8";
-    timeZone = "Asia/Kolkata";
-    stateVersion = "25.11";
-  };
-
-  # Users
-  sapphire.users = {
-    cypher = {
-      isAdmin = true;
-      description = "Cypher";
-      hashedPassword = "$6$7fad29ea$7HlcvyeGs6LLGTfhIVk.opyphoYrFWXKJxWC7CJKcUfhVg4B3l1xYCEOY9I7Ks3Z5oICOTwolOjkfevcTYTjI/";
-    };
-  };
-
   sapphire = {
-    boot.enable = true;
     storage = {
       enable = true;
       disko = {
@@ -79,33 +60,11 @@
         # };
       };
     };
-    nix.enable = true;
-    hardware = {
-      enableAllFirmware = true;
-      enableFwupd = true;
-      enableGraphicsDrivers = true;
-      enableBluetooth = true;
-      enableMultimedia = true;
-      enableUtils = true;
-    };
-    network = {
-      enable = true;
-      firewall = {
-        enable = true;
-        allowedTCPPorts = [ ];
-        allowedUDPPorts = [ ];
-      };
-    };
-    security.enable = true;
     # services.openssh = {
     #   enable = true;
     #   perUserPublicKeys = {
     #     cypher = [];
     #   };
     # };
-    desktop.niri = {
-      enable = true;
-      flavor = "dank-material-shell";
-    };
   };
 }

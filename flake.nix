@@ -1,7 +1,7 @@
 # --- flake.nix
 {
   description = "Functionality first";
-
+  
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts = {
@@ -9,10 +9,6 @@
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
-    agenix = {
-      url = "github:ryantm/agenix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -22,6 +18,7 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    import-tree.url = "github:vic/import-tree";
     # hyprland.url = "github:hyprwm/Hyprland";
     niri-flake.url = "github:sodiboo/niri-flake";
     stylix = {
@@ -53,6 +50,7 @@
     };
     nixos-hardware.url = "github:nixos/nixos-hardware";
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
+    sops-nix.url = "github:Mic92/sops-nix";
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";

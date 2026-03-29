@@ -1,4 +1,4 @@
-{
+{ 
   lib,
   inputs,
   self,
@@ -6,16 +6,29 @@
   ...
 }:
 let
-  hosts = {
-    atlas = {
-      system = "x86_64-linux";
-      config = import ./atlas;
-    };
-    phoenix = {
-      system = "x86_64-linux";
-      config = import ./phoenix;
-    };
-  };
+  hostDirs = builtins.attrNames (
+    lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./.)
+  );
+
+  hosts = lib.listToAttrs (
+    map (name:
+      let
+        dir = ./${name};
+        specsPath = dir + "/specs.toml";
+        specs = if builtins.pathExists specsPath
+                then builtins.fromTOML (builtins.readFile specsPath)
+                else throw "specs.toml doesn't exist";
+      in
+      {
+        name = name;
+        value = {
+          system = "${specs.system.arch}-linux";
+          config = import dir;
+          specs = specs;
+        };
+      }
+    ) hostDirs
+  );
 in
 {
   flake.nixosConfigurations = lib.mapAttrs (
@@ -24,7 +37,7 @@ in
       withSystem cfg.system (
         { self', inputs', ... }:
         {
-          specialArgs = { inherit inputs self; };
+          specialArgs = { inherit (cfg) specs; inherit inputs self; };
 
           modules = [
             {

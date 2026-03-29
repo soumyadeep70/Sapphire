@@ -47,6 +47,7 @@ in
       inputs',
       self,
       self',
+      config,
       ...
     }:
     {
@@ -54,6 +55,10 @@ in
         inputs.home-manager.nixosModules.home-manager
       ]
       ++ importModules ./.;
+
+      nixpkgs.overlays = [
+        self.overlays.default
+      ];
 
       home-manager = {
         extraSpecialArgs = {

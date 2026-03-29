@@ -1,0 +1,23 @@
+[system]
+arch = "x86_64"
+machineId = "7c2a19f5e3b84d62a1c90f5e8b42d71a"
+hostName = "atlas"
+locale = "en_US.UTF-8"
+timeZone = "Asia/Kolkata"
+stateVersion = "25.11"
+
+[network]
+openTCPPorts = []
+openUDPPorts = []
+
+[desktop]
+variant = "dank-material-shell"
+backend = "niri"
+
+
+[users.cypher]
+isAdmin = true
+description = "Cypher"
+hashedPassword = "$6$7fad29ea$7HlcvyeGs6LLGTfhIVk.opyphoYrFWXKJxWC7CJKcUfhVg4B3l1xYCEOY9I7Ks3Z5oICOTwolOjkfevcTYTjI/"
+extraGroups = []
+

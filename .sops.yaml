@@ -1,0 +1,13 @@
+keys:
+  - &phoenix age1448k2rf2q65e8q0qtknqw7f9ux8dclnwxxcxk5um2lk5sjavf35sf575d4
+
+creation_rules:
+  - path_regex: secrets/shared/.*\.yaml$
+    key_groups:
+      - age:
+          - *phoenix
+
+  - path_regex: secrets/phoenix/.*\.yaml$
+    key_groups:
+      - age:
+          - *phoenix

@@ -22,16 +22,13 @@
       };
       lfs.enable = true;
     };
-    # programs.git-credential-keepassxc = {
-    #   enable = true;
-    #   groups = "Git";
-    #   hosts = [
-    #     # TODO: extend
-    #     "https://github.com"
-    #     "https://gitlab.com"
-    #   ];
-    # };
-    # TODO: custom theme
     programs.gitui.enable = true;
+
+    programs.gh = {
+      enable = true;
+      gitProtocol = "ssh";
+      gitCredentialHelper.enable = false;
+    };
+    programs.gh-dash.enable = true;
   };
 }

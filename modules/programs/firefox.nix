@@ -3,8 +3,30 @@
   pkgs,
   ...
 }:
+let 
+  materialfox = pkgs.buildNpmPackage {
+    pname = "materialfox";
+    version = "latest";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "soumyadeep70";
+      repo = "material-fox-updated";
+      rev = "main";
+      sha256 = "sha256-l77Unw1sRLDkQWJEhs61uTZCAuPIVdiZ+S5pi+VAepc=";
+    };
+
+    npmDepsHash = "sha256-XfyQ9rasl54dd9qh1wThIMe2esm2PHPMc/Lbfv/d+7A=";
+
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out
+      cp -r chrome/* $out/
+      runHook postInstall
+    '';
+  };
+in
 {
-  home-manager.sharedModules = lib.singleton {
+  home-manager.sharedModules = lib.singleton ({ config, ... }: {
     programs.firefox = {
       enable = true;
       nativeMessagingHosts = [
@@ -36,9 +58,9 @@
           id = 0;
           isDefault = true;
           settings = {
-            "browser.aboutwelcome.enabled" = false;
             "startup.homepage_welcome_url" = "";
             "startup.homepage_welcome_url.additional" = "";
+            "browser.aboutwelcome.enabled" = false;
             "browser.startup.homepage_override.mstone" = "ignore";
             "browser.startup.page" = 3;
             "browser.contentblocking.category" = "strict";
@@ -54,16 +76,26 @@
                 url = "https://codeforces.com";
               }
             ];
+            "toolkit.legacyuserprofilecustomizations.stylesheets" = true;
+            "svg.context-properties.content.enabled" = true;
           };
           search = {
             default = "google";
             privateDefault = "ddg";
             force = true;
           };
-          # TODO: theme integration with materialfox and dms
         };
       };
     };
+    home.file.".mozilla/firefox/dev/chrome" = {
+      source = materialfox;
+      recursive = true;
+    };
+    home.file.".mozilla/firefox/dev/chrome/theme-material-blue.css" = {
+      source = "${config.xdg.configHome}/DankMaterialShell/firefox.css";
+      force = true;
+    };
+
     home.sessionVariables.BROWSER = "firefox";
     xdg.mimeApps.defaultApplications = {
       "text/html" = "firefox.desktop";
@@ -71,7 +103,7 @@
       "x-scheme-handler/https" = "firefox.desktop";
       "x-scheme-handler/about" = "firefox.desktop";
     };
-  };
+  });
   sapphire.storage.impermanence.users.shared.dirs = [
     ".mozilla"
   ];

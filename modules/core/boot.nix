@@ -1,17 +1,25 @@
 {
-  lib,
-  config,
   pkgs,
   ...
 }:
 {
   boot = {
+    kernelPackages = pkgs.linuxPackages_zen;
+
+    kernelParams = [
+      "quiet"
+      "splash"
+      "udev.log_level=3"
+      "boot.shell_on_fail"
+      "lsm=landlock,lockdown,yama,integrity,apparmor,bpf"
+    ];
+
+    consoleLogLevel = 0;
+
     initrd = {
       enable = true;
       systemd.enable = true;
     };
-
-    kernelPackages = pkgs.linuxPackages_zen;
 
     loader = {
       timeout = 3;
@@ -25,12 +33,12 @@
 
     plymouth = {
       enable = true;
-      theme = "circle_hud";
-      themePackages = [
-        (pkgs.adi1090x-plymouth-themes.override {
-          selected_themes = [ "circle_hud" ];
-        })
-      ];
+      # theme = "circle_hud";
+      # themePackages = [
+      #   (pkgs.adi1090x-plymouth-themes.override {
+      #     selected_themes = [ "circle_hud" ];
+      #   })
+      # ];
     };
   };
 

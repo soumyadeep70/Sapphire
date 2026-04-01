@@ -42,7 +42,21 @@
               xdg-desktop-portal-gtk
               xdg-desktop-portal-gnome
             ];
-            config.common.default = "*";
+            config = {
+              common.default = [
+                "gnome"
+                "gtk"
+              ];
+              niri = {
+                default = [
+                  "gnome"
+                  "gtk"
+                ];
+                "org.freedesktop.impl.portal.ScreenCast" = [
+                  "gnome"
+                ];
+              };
+            };
           };
         };
         home-manager.sharedModules = lib.singleton {
@@ -57,7 +71,21 @@
                 xdg-desktop-portal-gtk
                 xdg-desktop-portal-gnome
               ];
-              config.common.default = "*";
+              config = {
+                common.default = [
+                  "gnome"
+                  "gtk"
+                ];
+                niri = {
+                  default = [
+                    "gnome"
+                    "gtk"
+                  ];
+                  "org.freedesktop.impl.portal.ScreenCast" = [
+                    "gnome"
+                  ];
+                };
+              };
             };
             userDirs = {
               enable = true;

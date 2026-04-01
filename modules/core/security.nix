@@ -7,6 +7,7 @@
     rtkit.enable = true;
     tpm2.enable = true;
     polkit.enable = true;
+    apparmor.enable = true;
   };
   # systemd.user.services.polkit-gnome-authentication-agent-1 = {
   #   description = "polkit-gnome-authentication-agent-1";

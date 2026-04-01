@@ -43,18 +43,11 @@
               xdg-desktop-portal-gnome
             ];
             config = {
-              common.default = [
-                "gnome"
-                "gtk"
-              ];
+              common.default = [ "gtk" "gnome" ];
               niri = {
-                default = [
-                  "gnome"
-                  "gtk"
-                ];
-                "org.freedesktop.impl.portal.ScreenCast" = [
-                  "gnome"
-                ];
+                default = [ "gtk" "gnome" ];
+                "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
+                "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
               };
             };
           };
@@ -72,18 +65,11 @@
                 xdg-desktop-portal-gnome
               ];
               config = {
-                common.default = [
-                  "gnome"
-                  "gtk"
-                ];
+                common.default = [ "gtk" "gnome" ];
                 niri = {
-                  default = [
-                    "gnome"
-                    "gtk"
-                  ];
-                  "org.freedesktop.impl.portal.ScreenCast" = [
-                    "gnome"
-                  ];
+                  default = [ "gtk" "gnome" ];
+                  "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
+                  "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
                 };
               };
             };
@@ -114,8 +100,7 @@
           home.sessionVariables = {
             CLUTTER_BACKEND = "wayland";
             SDL_VIDEODRIVER = "wayland";
-            GSK_RENDERER = "ngl";
-            GDK_BACKEND = "wayland,x11,*";
+            GSK_RENDERER = "gl";
             GDK_DPI_SCALE = "1";
             GDK_SCALE = "1";
             QT_AUTO_SCREEN_SCALE_FACTOR = "1";

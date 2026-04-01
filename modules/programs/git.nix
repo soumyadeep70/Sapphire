@@ -26,8 +26,8 @@
 
     programs.gh = {
       enable = true;
-      gitProtocol = "ssh";
       gitCredentialHelper.enable = false;
+      settings.git_protocol = "ssh";
     };
     programs.gh-dash.enable = true;
   };

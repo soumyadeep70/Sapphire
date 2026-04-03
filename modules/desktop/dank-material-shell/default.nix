@@ -9,6 +9,7 @@
   imports = [
     inputs.dank-material-shell.nixosModules.default
     ./utils.nix
+    ./theming.nix
     ./backends/niri.nix
   ];
 
@@ -21,7 +22,7 @@
 
     home-manager.sharedModules = lib.singleton({ config, lib, ... }: {
       imports = [
-        inputs.dank-material-shell.homeModules. default
+        inputs.dank-material-shell.homeModules.default
       ];
 
       programs.dank-material-shell.enable = true;

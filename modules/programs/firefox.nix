@@ -90,9 +90,6 @@ in
     home.file.".mozilla/firefox/dev/chrome" = {
       source = materialfox;
       recursive = true;
-    };
-    home.file.".mozilla/firefox/dev/chrome/theme-material-blue.css" = {
-      source = "${config.xdg.configHome}/DankMaterialShell/firefox.css";
       force = true;
     };
 

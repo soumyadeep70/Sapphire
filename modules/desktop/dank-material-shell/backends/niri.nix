@@ -1,7 +1,6 @@
 {
   inputs,
   inputs',
-  config,
   lib,
   specs,
   ...
@@ -66,19 +65,21 @@
           focus-follows-mouse.enable = true;
         };
 
-        outputs = lib.mapAttrs' (_: v: {
-          name = v.identifier;
-          value = {
-            mode = {
-              inherit (v.mode) width height refresh;
+        outputs = builtins.listToAttrs (
+          map (v: {
+            name = v.identifier;
+            value = {
+              mode = {
+                inherit (v.mode) width height refresh;
+              };
+              inherit (v) scale position;
+              transform = {
+                inherit (v.transform) flipped rotation;
+              };
+              inherit (v) variable-refresh-rate;
             };
-            inherit (v) scale position;
-            transform = {
-              inherit (v.transform) flipped rotation;
-            };
-            variable-refresh-rate = "on-demand";
-          };
-        }) config.sapphire.desktop.settings.monitors;
+          }) specs.desktop.monitors
+        );
 
         cursor = {
           theme = "Bibata-Modern-Ice";

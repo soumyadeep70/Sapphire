@@ -1,2 +1,10 @@
 variant = "dank-material-shell"
 backend = "niri"
+
+[[monitors]]
+identifier = "PNP(BNQ) BenQ GW2790 S1R0259701Q"  # connector name (eg. HDMI-A-1) or monitor manufacturer, model, and serial, separated by a single space each (eg. BNQ BenQ GW2790 S1R0259701Q)
+mode = { width = 1920, height = 1080, refresh = 100.000 }
+scale = 1.0
+transform = { flipped = false, rotation = 0 }
+position = { x = 0, y = 0 }
+variable-refresh-rate = "on-demand"

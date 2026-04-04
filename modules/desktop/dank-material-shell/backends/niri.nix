@@ -8,14 +8,6 @@
 }:
 {
   config = lib.mkIf (specs.desktop.backend == "niri") {
-    # TODO: move these deps
-    services.power-profiles-daemon.enable = true;
-    services.upower.enable = true;
-
-    environment.sessionVariables = {
-      WLR_NO_HARDWARE_CURSORS = "1";
-    };
-
     nix.settings = {
       substituters = [
         "https://niri.cachix.org"
@@ -25,7 +17,6 @@
       ];
     };
 
-    # install niri
     environment.systemPackages = [
       inputs'.niri-flake.packages.niri-unstable
     ];
@@ -33,7 +24,10 @@
       inputs'.niri-flake.packages.niri-unstable
     ];
 
-    # niri settings
+    environment.sessionVariables = {
+      WLR_NO_HARDWARE_CURSORS = "1";
+    };
+
     home-manager.sharedModules = lib.singleton {
       imports = [
         inputs.niri-flake.homeModules.config

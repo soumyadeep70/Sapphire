@@ -16,3 +16,8 @@ firewall = true
 openTCPPorts = []
 openUDPPorts = []
 
+[users.cypher]
+isAdmin = true
+description = "Cypher"
+hashedPassword = "$6$7fad29ea$7HlcvyeGs6LLGTfhIVk.opyphoYrFWXKJxWC7CJKcUfhVg4B3l1xYCEOY9I7Ks3Z5oICOTwolOjkfevcTYTjI/"
+extraGroups = []

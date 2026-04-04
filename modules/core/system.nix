@@ -1,31 +1,24 @@
 {
-  lib,
-  config,
   specs,
   ...
 }:
 {
-  networking = {
-    inherit (specs.system) hostName;
-    hostId = lib.substring 0 8 specs.system.machineId;
-  };
+  environment.etc.machine-id.text = specs.core.system.machineId;
 
-  environment.etc.machine-id.text = specs.system.machineId;
+  time.timeZone = specs.core.system.timeZone;
 
-  time.timeZone = specs.system.timeZone;
-
-  i18n.defaultLocale = specs.system.locale;
+  i18n.defaultLocale = specs.core.system.locale;
   i18n.extraLocaleSettings = {
-    LC_ADDRESS = specs.system.locale;
-    LC_IDENTIFICATION = specs.system.locale;
-    LC_MEASUREMENT = specs.system.locale;
-    LC_MONETARY = specs.system.locale;
-    LC_NAME = specs.system.locale;
-    LC_NUMERIC = specs.system.locale;
-    LC_PAPER = specs.system.locale;
-    LC_TELEPHONE = specs.system.locale;
-    LC_TIME = specs.system.locale;
-    LC_COLLATE = specs.system.locale;
+    LC_ADDRESS = specs.core.system.locale;
+    LC_IDENTIFICATION = specs.core.system.locale;
+    LC_MEASUREMENT = specs.core.system.locale;
+    LC_MONETARY = specs.core.system.locale;
+    LC_NAME = specs.core.system.locale;
+    LC_NUMERIC = specs.core.system.locale;
+    LC_PAPER = specs.core.system.locale;
+    LC_TELEPHONE = specs.core.system.locale;
+    LC_TIME = specs.core.system.locale;
+    LC_COLLATE = specs.core.system.locale;
   };
 
   sapphire.storage.impermanence.system = {
@@ -42,5 +35,5 @@
     ];
   };
 
-  system = { inherit (specs.system) stateVersion; };
+  system = { inherit (specs.core.system) stateVersion; };
 }

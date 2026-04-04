@@ -153,7 +153,7 @@ in
       }
     ]
     ++ lib.mapAttrsToList (name: _: {
-      assertion = lib.hasAttr name specs.users;
+      assertion = lib.hasAttr name specs.core.users;
       message = "impermanence: user ${name} not defined";
     }) cfg.impermanence.users.perUser;
 
@@ -234,7 +234,7 @@ in
       inherit (cfg.impermanence.system) files;
     };
 
-    home-manager.users = lib.genAttrs (builtins.attrNames specs.users) (
+    home-manager.users = lib.genAttrs (builtins.attrNames specs.core.users) (
       name:
       (
         { config, lib, ... }:

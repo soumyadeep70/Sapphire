@@ -1,0 +1,4 @@
+[virt-manager]
+enable = false  # currently broken
+
+

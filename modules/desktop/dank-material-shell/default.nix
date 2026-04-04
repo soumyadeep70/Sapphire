@@ -8,8 +8,9 @@
 {
   imports = [
     inputs.dank-material-shell.nixosModules.default
-    ./utils.nix
+    ./login-manager.nix
     ./theming.nix
+    ./xdg.nix
     ./backends/niri.nix
   ];
 

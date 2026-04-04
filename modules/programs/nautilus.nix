@@ -15,7 +15,7 @@
   };
   home-manager.sharedModules = lib.singleton {
     xdg.mimeApps.defaultApplications = {
-      "inode/directory" = lib.mkBefore [ "nautilus.desktop" ];
+      "inode/directory" = lib.mkBefore [ "org.gnome.Nautilus.desktop" ];
     };
   };
   sapphire.storage.impermanence.users.shared.dirs = [

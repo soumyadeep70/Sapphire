@@ -1,6 +1,5 @@
 {
   lib,
-  config,
   specs,
   ...
 }:
@@ -21,7 +20,7 @@
     isNormalUser = true;
     inherit (userCfg) description hashedPassword;
     extraGroups = userCfg.extraGroups ++ lib.optional userCfg.isAdmin "wheel";
-  }) specs.users;
+  }) specs.core.users;
 
   security.sudo.extraConfig = ''
     Defaults lecture=never
@@ -32,7 +31,7 @@
     home = {
       username = user;
       homeDirectory = "/home/${user}";
-      inherit (specs.system) stateVersion; # TODO: do smth abt it
+      stateVersion = specs.core.system.homeStateVersion;
     };
-  }) specs.users;
+  }) specs.core.users;
 }

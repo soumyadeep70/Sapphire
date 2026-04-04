@@ -67,13 +67,17 @@ let
       };
 in
 {
-  networking.networkmanager.enable = true;
-  users.groups."networkmanager".members = builtins.attrNames specs.users;
+  networking = {
+    networkmanager.enable = true;
+    inherit (specs.core.system) hostName;
+    hostId = lib.substring 0 8 specs.core.system.machineId;
+  };
+  users.groups."networkmanager".members = builtins.attrNames specs.core.users;
 
   networking.firewall = (
     let
-      TCPPorts = groupPortsAndPortRanges specs.network.openTCPPorts;
-      UDPPorts = groupPortsAndPortRanges specs.network.openUDPPorts;
+      TCPPorts = groupPortsAndPortRanges specs.core.network.openTCPPorts;
+      UDPPorts = groupPortsAndPortRanges specs.core.network.openUDPPorts;
     in
     {
       enable = true;

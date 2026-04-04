@@ -8,7 +8,7 @@
     inputs.sops-nix.nixosModules.sops
   ];
 
-  users.groups."secrets".members = builtins.attrNames specs.users;
+  users.groups."secrets".members = builtins.attrNames specs.core.users;
 
   sops.age.keyFile = "/persist/system/var/lib/sops-nix/age-key.txt";
 

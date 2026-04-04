@@ -63,7 +63,7 @@
     {
       hardware.i2c.enable = true;
       environment.systemPackages = [ pkgs.ddcutil ];
-      users.users = lib.genAttrs (builtins.attrNames specs.users) (_: {
+      users.users = lib.genAttrs (builtins.attrNames specs.core.users) (_: {
         extraGroups = [ "i2c" ];
       });
     }

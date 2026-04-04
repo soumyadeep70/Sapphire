@@ -26,7 +26,7 @@ let
   };
 in
 {
-  home-manager.sharedModules = lib.singleton ({ config, ... }: {
+  home-manager.sharedModules = lib.singleton {
     programs.firefox = {
       enable = true;
       nativeMessagingHosts = [
@@ -100,7 +100,7 @@ in
       "x-scheme-handler/https" = "firefox.desktop";
       "x-scheme-handler/about" = "firefox.desktop";
     };
-  });
+  };
 
   security.apparmor.policies.firefox = {
     state = "complain";

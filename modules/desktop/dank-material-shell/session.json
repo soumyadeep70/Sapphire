@@ -1,7 +1,7 @@
 {
   "isLightMode": false,
   "doNotDisturb": false,
-  "wallpaperPath": "/home/cypher/Pictures/Wallpapers/2151546179.jpg",
+  "wallpaperPath": "/home/cypher/Pictures/Wallpapers/4k-keyboard.jpg",
   "perMonitorWallpaper": false,
   "monitorWallpapers": {},
   "perModeWallpaper": false,
@@ -77,5 +77,7 @@
   "launcherLastMode": "all",
   "appDrawerLastMode": "apps",
   "niriOverviewLastMode": "apps",
+  "settingsSidebarExpandedIds": ",",
+  "settingsSidebarCollapsedIds": ",",
   "configVersion": 3
 }

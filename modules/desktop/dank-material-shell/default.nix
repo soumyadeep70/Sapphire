@@ -21,19 +21,18 @@
       dgop.package = inputs'.dgop.packages.default;
     };
 
-    home-manager.sharedModules = lib.singleton({ config, lib, ... }: {
+    home-manager.sharedModules = lib.singleton ({ config, ... }: {
       imports = [
         inputs.dank-material-shell.homeModules.default
       ];
 
       programs.dank-material-shell.enable = true;
 
-      home.activation.initDMS = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        install -Dm644 ${./settings.json} \
-          "${config.xdg.configHome}/DankMaterialShell/settings.json"
-        install -Dm644 ${./session.json} \
-          "${config.xdg.stateHome}/DankMaterialShell/session.json"
-      '';
+      #TODO: remove hardcoded path
+      xdg.configFile."DankMaterialShell/settings.json".source = 
+        config.lib.file.mkOutOfStoreSymlink "/home/cypher/Downloads/sapphire/modules/desktop/dank-material-shell/settings.json";
+      xdg.stateFile."DankMaterialShell/session.json".source = 
+        config.lib.file.mkOutOfStoreSymlink "/home/cypher/Downloads/sapphire/modules/desktop/dank-material-shell/session.json";
     });
   };
 }

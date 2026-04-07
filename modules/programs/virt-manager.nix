@@ -16,7 +16,7 @@
       };
     };
 
-    users.groups."libvirtd".members = builtins.attrNames specs.users;
+    users.groups."libvirtd".members = builtins.attrNames specs.core.users;
 
     sapphire.storage.impermanence.system.dirs = [
       "/var/lib/libvirt"

@@ -55,7 +55,7 @@ in
       withSystem cfg.system (
         { self', inputs', ... }:
         {
-          specialArgs = { specs = builtins.trace (builtins.toJSON cfg.specs) cfg.specs; inherit inputs self; };
+          specialArgs = { inherit (cfg) specs; inherit inputs self; };
 
           modules = [
             {

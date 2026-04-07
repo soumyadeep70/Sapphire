@@ -1,0 +1,11 @@
+[cloudflare-tunnel]
+enable = true
+tunnelName = "default"
+domainName = "soumyadeep.qzz.io"
+enableCoder = true
+
+[caddy]
+enable = true
+
+[docker]
+enable = true

@@ -240,7 +240,7 @@
   "dankLauncherV2UnloadOnClose": false,
   "useAutoLocation": true,
   "weatherEnabled": true,
-  "networkPreference": "auto",
+  "networkPreference": "wifi",
   "iconTheme": "Papirus-Dark",
   "cursorSettings": {
     "theme": "Bibata-Modern-Ice",

@@ -32,7 +32,9 @@
       "terminal.integrated.defaultProfile.linux": "bash",
       "editor.formatOnSave": true,
       "files.trimTrailingWhitespace": true,
-      "git.autofetch": true
+      "git.autofetch": true,
+      "nix.enableLanguageServer": true,
+      "nix.serverPath": "nixd"
     }
   },
 

@@ -6,7 +6,7 @@ sudo apt-get update
 sudo apt-get install -y git direnv
 
 echo "Installing nix-direnv via Nix profile..."
-nix profile add nixpkgs#nix-direnv
+nix profile add nixpkgs#{nix-direnv,nixd}
 
 echo "Configuring nix-direnv integration..."
 mkdir -p ~/.config/direnv
